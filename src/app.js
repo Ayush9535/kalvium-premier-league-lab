@@ -78,15 +78,18 @@ function filterByPosition(position){
 
 function filterByAward(award) {
   let arr = [];
-  players.some((player) => {
+  for (let i = 0; i < players.length; i++) {
     let aw = false;
-    player.awards.some((playerAward) => {
-      if (playerAward.name === award) {
+    for (let j = 0; j < players[i].awards.length; j++) {
+      if (players[i].awards[j].name === award) {
         aw = true;
+        break;
       }
-    });
-    if (aw) arr.push(player);
-  });
+    }
+    if (aw) {
+      arr.push(players[i]);
+    }
+  }
   return arr;
 }
 
@@ -95,31 +98,36 @@ function filterByAward(award) {
 
 function filterByAwardxTimes(award, count) {
   let arr = [];
-  players.some((player) => {
+  for (let i = 0; i < players.length; i++) {
     let awardCount = 0;
-    player.awards.some((playerAward) => {
-      if (playerAward.name === award) {
+    for (let j = 0; j < players[i].awards.length; j++) {
+      if (players[i].awards[j].name === award) {
         awardCount += 1;
       }
-    });
-    if (awardCount === parseInt(count)) arr.push(player);
-  });
-  return arr;
+    }
+    if (awardCount === parseInt(count)) {
+      arr.push(players[i]);
+    }
+  }
+return arr;
 }
 
 //Progression 7 - Filter players that won ______ award and belong to ______ country
 
 function filterByAwardxCountry(award, country) {
   let arr = [];
-  players.some((player) => {
+  for (let i = 0; i < players.length; i++) {
     let awardStatus = false;
-    player.awards.some((playerAward) => {
-      if (playerAward.name === award && player.country === country) {
+    for (let j = 0; j < players[i].awards.length; j++) {
+      if (players[i].awards[j].name === award && players[i].country === country) {
         awardStatus = true;
+        break;
       }
-    });
-    if (awardStatus) arr.push(player);
-  });
+    }
+    if (awardStatus) {
+      arr.push(players[i]);
+    }
+  }
   return arr;
 }
 
@@ -127,15 +135,15 @@ function filterByAwardxCountry(award, country) {
 
 function filterByNoOfAwardsxTeamxAge(awardcount, team, age) {
   let arr = [];
-  players.some((player) => {
+  for (let i = 0; i < players.length; i++) {
     if (
-      player.awards.length >= parseInt(awardcount) &&
-      player.team === team &&
-      player.age <= parseInt(age)
+      players[i].awards.length >= parseInt(awardcount) &&
+      players[i].team === team &&
+      players[i].age <= parseInt(age)
     ) {
-      arr.push(player);
+      arr.push(players[i]);
     }
-  });
+  }
   return arr;
 }
 
@@ -149,38 +157,56 @@ function SortByAge() {
 
 function FilterByTeamxSortByNoOfAwards(team) {
   let arr = [];
-  players.some((player) => {
-    if (player.team === team) {
-      arr.push(player);
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].team === team) {
+      arr.push(players[i]);
     }
-  });
-  return arr.sort((a, b) => b.awards.length - a.awards.length);
+  }
+  arr.sort((a, b) => b.awards.length - a.awards.length);
+  return arr;
 }
 
 //Challenge 1 - Sort players that have won _______ award _____ times and belong to _______ country in alphabetical order of their names
 
 function SortByNamexAwardxTimes(award, count, country) {
-  let arr = players.filter((player) => {
+  let arr = [];
+
+  for (let i = 0; i < players.length; i++) {
     let awardCount = 0;
-    for (let playerAward of player.awards) {
-      if (playerAward.name === award) {
+    for (let j = 0; j < players[i].awards.length; j++) {
+      if (players[i].awards[j].name === award) {
         awardCount++;
       }
     }
-    return awardCount === parseInt(count) && player.country === country;
-  });
-
-  return arr.sort((a, b) => a.name.localeCompare(b.name));
+    if (awardCount === parseInt(count) && players[i].country === country) {
+      arr.push(players[i]);
+    }
+  }
+  arr.sort((a, b) => a.name.localeCompare(b.name));
+  return arr;
 }
 
 //Challenge 2 - Sort players that are older than _____ years in alphabetical order
 //Sort the awards won by them in reverse chronological order
 
 function SortByNamexOlderThan(age) {
-  let arr = players.filter((player) => player.age >= parseInt(age)).map((player) => (
-    {...player,awards: [...player.awards].sort((a, b) => b.year - a.year),
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
+  let arr = [];
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].age >= parseInt(age)) {
+      const obj = {};
+      obj.name = players[i].name;
+      obj.age = players[i].age;
+      obj.awards = [];
+      for (let j = 0; j < players[i].awards.length; j++) {
+        obj.awards.push({
+          name: players[i].awards[j].name,
+          year: players[i].awards[j].year,
+        });
+      }
+      obj.awards.sort((a, b) => b.year - a.year);
+      arr.push(obj);
+    }
+  }
+  arr.sort((a, b) => a.name.localeCompare(b.name));
   return arr;
 }
